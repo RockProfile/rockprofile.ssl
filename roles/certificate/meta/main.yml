@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  author: Peter McDonald
+  description: >
+    Provides ability to create an SSL certificate for a domain while updating the DNS for a Cloudflare hosted domain
+  company: Rock Profile LTD
+
+  license: MIT
+
+  min_ansible_version: 2.9
+
+  galaxy_tags:
+    - letsencrypt
+    - cloudflare
+    - dns
+    - ssl
+
+dependencies: []

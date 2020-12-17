@@ -1,0 +1,99 @@
+---
+- name: Create store directory
+  file:
+    path: "{{ certificate_path }}"
+    mode: "700"
+    state: directory
+
+- name: Check if {{ certificate_path }}/letsencrypt.key already exists.
+  stat:
+    path: stat {{ certificate_path }}/letsencrypt.key
+  register: lets_encrypt_key
+
+- name: Create account token.
+  command: openssl genrsa -out {{ certificate_path }}/letsencrypt.key 4096
+  when: not lets_encrypt_key.stat.exists
+
+- name: Create csr for {{ common_name }}.
+  command: >
+    openssl req -new -newkey rsa:4096 -nodes -keyout {{ certificate_path }}/{{ domain }}.key -out
+    {{ certificate_path }}/{{ domain }}.csr -subj "/C=GB/ST=London/L=London/O=Global Security/OU=IT
+    Department/CN={{ common_name }}"
+
+- name: Create a challenge for {{ common_name }} using an account key file.
+  acme_certificate:
+    acme_version: 2
+    account_key_src: "{{ certificate_path }}/letsencrypt.key"
+    account_email: "{{ lets_encrypt_account_email }}"
+    csr: "{{ certificate_path }}/{{ domain }}.csr"
+    dest: "{{ certificate_path }}/{{ domain }}.crt"
+    challenge: dns-01
+    acme_directory: https://acme-v02.api.letsencrypt.org/directory
+    remaining_days: "{{ remaining_days|int }}"
+    terms_agreed: true
+  register: certificate_challenge
+
+- name: Delete old DNS record ({{ certificate_challenge.challenge_data[common_name]['dns-01'].record }}).
+  cloudflare_dns:
+    zone: "{{ domain }}"
+    record: "{{ certificate_challenge.challenge_data[common_name]['dns-01'].record }}"
+    type: TXT
+    value: "{{ certificate_challenge.challenge_data[common_name]['dns-01'].resource_value }}"
+    account_email: "{{ cloudflare_account_email }}"
+    account_api_token: "{{ cloudflare_api_token }}"
+    state: absent
+  when: certificate_challenge is changed
+
+- name: Delete old DNS record ({{ certificate_challenge.challenge_data[common_name]['dns-01'].record }}.{{ domain }}).
+  cloudflare_dns:
+    zone: "{{ domain }}"
+    record: "{{ certificate_challenge.challenge_data[common_name]['dns-01'].record }}.{{ domain }}"
+    type: TXT
+    value: "{{ certificate_challenge.challenge_data[common_name]['dns-01'].resource_value }}"
+    account_email: "{{ cloudflare_account_email }}"
+    account_api_token: "{{ cloudflare_api_token }}"
+    state: absent
+  when: certificate_challenge is changed
+
+- name: Create new DNS record ({{ certificate_challenge.challenge_data[common_name]['dns-01'].record }}).
+  cloudflare_dns:
+    zone: "{{ domain }}"
+    record: "{{ certificate_challenge.challenge_data[common_name]['dns-01'].record }}"
+    type: TXT
+    value: "{{ certificate_challenge.challenge_data[common_name]['dns-01'].resource_value }}"
+    account_email: "{{ cloudflare_account_email }}"
+    account_api_token: "{{ cloudflare_api_token }}"
+    solo: true
+    state: present
+  when: certificate_challenge is changed
+
+- name: Create new DNS record ({{ certificate_challenge.challenge_data[common_name]['dns-01'].record }}.{{ domain }}).
+  cloudflare_dns:
+    zone: "{{ domain }}"
+    record: "{{ certificate_challenge.challenge_data[common_name]['dns-01'].record }}.{{ domain }}"
+    type: TXT
+    value: "{{ certificate_challenge.challenge_data[common_name]['dns-01'].resource_value }}"
+    account_email: "{{ cloudflare_account_email }}"
+    account_api_token: "{{ cloudflare_api_token }}"
+    solo: true
+    state: present
+  when: certificate_challenge is changed
+
+- name: Create a challenge for {{ common_name }} using an account key file.
+  acme_certificate:
+    acme_version: 2
+    account_key_src: "{{ certificate_path }}/letsencrypt.key"
+    account_email: "{{ lets_encrypt_account_email }}"
+    csr: "{{ certificate_path }}/{{ domain }}.csr"
+    dest: "{{ certificate_path }}/{{ domain }}.crt"
+    challenge: dns-01
+    acme_directory: https://acme-v02.api.letsencrypt.org/directory
+    remaining_days: "{{ remaining_days }}"
+    terms_agreed: true
+    data: "{{ certificate_challenge }}"
+  when: certificate_challenge is changed
+
+- name: Delete CSR {{ certificate_path }}/{{ domain }}.csr
+  file:
+    path: "{{ certificate_path }}/{{ domain }}.csr"
+    state: absent

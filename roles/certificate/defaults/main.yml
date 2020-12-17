@@ -1,0 +1,5 @@
+---
+certificate_path: ./
+force: false
+remaining_days: 60
+wildcard_dns: false
