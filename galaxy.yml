@@ -2,7 +2,7 @@
 # The namespace of the collection. This can be a company/brand/organization or product namespace under which all
 # content lives. May only contain alphanumeric lowercase characters and underscores. Namespaces cannot start with
 # underscores or numbers and cannot contain consecutive underscores
-namespace: devfaq
+namespace: rockprofile
 
 # The name of the collection. Has the same character restrictions as 'namespace'
 name: ssl
@@ -16,12 +16,11 @@ readme: README.md
 # A list of the collection's content authors. Can be just the name or in the format 'Full Name <email> (url)
 # @nicks:irc/im.site#channel'
 authors:
-- Peter McDonald <me@petermcdonald.co.uk>
-
+- Peter McDonald <admin@rockprofile.com>
 
 ### OPTIONAL but strongly recommended
 # A short summary description of the collection
-description: Renewal and distribution of Lets Encrypt certificates using DNS validation through Cloudflare.
+description: Creation and renewal and distribution of Lets Encrypt certificates using DNS validation through Cloudflare.
 
 # Either a single license or a list of licenses for content inside of a collection. Ansible Galaxy currently only
 # accepts L(SPDX,https://spdx.org/licenses/) licenses. This key is mutually exclusive with 'license_file'
@@ -46,13 +45,13 @@ dependencies: {}
 repository: https://gitlab.devfaq.com/miscellaneous-tools/devfaq.ssl
 
 # The URL to any online docs
-documentation: http://docs.example.com
+documentation: https://github.com/RockProfile/rockprofile.ssl
 
 # The URL to the homepage of the collection/project
-homepage: http://example.com
+homepage: https://github.com/RockProfile/rockprofile.ssl
 
 # The URL to the collection issue tracker
-issues: http://example.com/issue/tracker
+issues: https://github.com/RockProfile/rockprofile.ssl/issues
 
 # A list of file glob-like patterns used to filter any files or directories that should not be included in the build
 # artifact. A pattern is matched from the relative path of the file or directory of the collection directory. This
