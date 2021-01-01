@@ -26,7 +26,7 @@
     account_key_src: "{{ certificate_path }}/letsencrypt.key"
     account_email: "{{ lets_encrypt_account_email }}"
     csr: "{{ certificate_path }}/{{ domain }}.csr"
-    dest: "{{ certificate_path }}/{{ domain }}.crt"
+    fullchain_dest: "{{ certificate_path }}/{{ domain }}.crt"
     challenge: dns-01
     acme_directory: https://acme-v02.api.letsencrypt.org/directory
     remaining_days: "{{ remaining_days|int }}"
@@ -85,7 +85,7 @@
     account_key_src: "{{ certificate_path }}/letsencrypt.key"
     account_email: "{{ lets_encrypt_account_email }}"
     csr: "{{ certificate_path }}/{{ domain }}.csr"
-    dest: "{{ certificate_path }}/{{ domain }}.crt"
+    fullchain_dest: "{{ certificate_path }}/{{ domain }}.crt"
     challenge: dns-01
     acme_directory: https://acme-v02.api.letsencrypt.org/directory
     remaining_days: "{{ remaining_days }}"
