@@ -26,7 +26,8 @@
     account_key_src: "{{ certificate_path }}/letsencrypt.key"
     account_email: "{{ lets_encrypt_account_email }}"
     csr: "{{ certificate_path }}/{{ domain }}.csr"
-    fullchain_dest: "{{ certificate_path }}/{{ domain }}.crt"
+    dest: "{{ certificate_path }}/{{ domain }}.crt"
+    fullchain_dest: "{{ certificate_path }}/{{ domain }}-fullchain.crt"
     challenge: dns-01
     acme_directory: https://acme-v02.api.letsencrypt.org/directory
     remaining_days: "{{ remaining_days|int }}"
@@ -79,13 +80,14 @@
     state: present
   when: certificate_challenge is changed
 
-- name: Create a challenge for {{ common_name }} using an account key file.
+- name: Create certificate for {{ common_name }} using an account key file.
   acme_certificate:
     acme_version: 2
     account_key_src: "{{ certificate_path }}/letsencrypt.key"
     account_email: "{{ lets_encrypt_account_email }}"
     csr: "{{ certificate_path }}/{{ domain }}.csr"
-    fullchain_dest: "{{ certificate_path }}/{{ domain }}.crt"
+    dest: "{{ certificate_path }}/{{ domain }}.crt"
+    fullchain_dest: "{{ certificate_path }}/{{ domain }}-fullchain.crt"
     challenge: dns-01
     acme_directory: https://acme-v02.api.letsencrypt.org/directory
     remaining_days: "{{ remaining_days }}"
