@@ -1,0 +1,7 @@
+image: 192.168.0.5:8086/python-cicd
+
+Lint:
+  script:
+    - export PATH=/root/.local/bin:$PATH
+    - pip install --user yamllint
+    - yamllint -c .yamllint ./
