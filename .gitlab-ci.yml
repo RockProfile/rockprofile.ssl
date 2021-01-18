@@ -1,7 +1,9 @@
+---
 image: 192.168.0.5:8086/python-cicd
 
 Lint:
   script:
+    - set -e
     - export PATH=/root/.local/bin:$PATH
     - pip install --user yamllint
     - yamllint -c .yamllint ./
